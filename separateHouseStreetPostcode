@@ -1,0 +1,28 @@
+function separateHouseStreetPostcode(address) {
+  // Regular expression to match postcodes
+  var postcodeRegex = /([A-Z][A-HJ-Y]?[0-9][A-Z0-9]? ?[0-9][A-Z]{2}|[G][I][R] ?0[A]{2})|([A-Z][A-HJ-Y]?[0-9][A-Z0-9]?)/g;
+  var postcodeMatch = address.match(postcodeRegex);
+  var postcode = postcodeMatch ? postcodeMatch[0] : null;
+  
+  // Remove postcode from address
+  var addressWithoutPostcode = address.replace(postcode, '').trim();
+
+  // Regular expression to separate house number and street name
+  var houseStreetRegex = /^(\d+-\d+|\d+[A-Za-z]?)?\s*(.*)$/;
+  var match = addressWithoutPostcode.match(houseStreetRegex);
+  var houseNumber = match ? match[1] : null;
+  var streetName = match ? match[2] : addressWithoutPostcode;
+
+    // Check if street name contains 'Unit' followed by a number
+  var unitNumberRegex = /Unit\s+(\d+)/i;
+  var unitMatch = streetName.match(unitNumberRegex);
+  var unitNumber = unitMatch ? 'Unit ' + unitMatch[1] : null;
+
+  // Remove 'Unit' number from street name
+  if (unitMatch) {
+    streetName = streetName.replace(unitMatch[0], '').trim();
+  }
+
+  // Return values in a 2D array with values arranged in columns
+  return [[unitNumber, houseNumber, streetName, postcode]];
+}
